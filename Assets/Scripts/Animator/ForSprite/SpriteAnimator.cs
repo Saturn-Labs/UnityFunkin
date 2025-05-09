@@ -37,13 +37,22 @@ namespace Animator.ForSprite
 
         [SerializeField]
         private int _LastFrame = -1;
-        
-        public override int? CurrentFrame =>
-            CurrentAnimation?.Frames.Count is { } frameCount && CurrentAnimation?.Frames.Count != 0 && FrameRate > 0
-                ? !_ShouldReverse ? 
-                    Mathf.FloorToInt(Time * FrameRate % frameCount) : 
-                    frameCount - Mathf.FloorToInt(Time * FrameRate % frameCount) - 1
-                : null;
+
+        public override int? CurrentFrame
+        {
+            get
+            {
+                var frameRate = UseAnimationFrameRate ? CurrentAnimation?.FrameRate : FrameRate;
+                if (CurrentAnimation is null || CurrentAnimation.Frames.Count == 0 || frameRate is null || frameRate <= 0)
+                    return null;
+                var frameCount = CurrentAnimation.Frames.Count;
+                var time = Time;
+                var frame = Mathf.FloorToInt(time * frameRate.Value % frameCount);
+                if (ShouldReverse || CurrentAnimation.Reverse)
+                    frame = frameCount - frame - 1;
+                return frame;
+            }
+        }
 
         [SerializeField]
         private float _Time;
@@ -78,6 +87,7 @@ namespace Animator.ForSprite
         public bool StartOnFirstAnimation;
         public bool UseOffsets;
         public bool OffsetOnLocalPosition = true;
+        public bool UseAnimationFrameRate = true;
         
         public event OnAnimationStartedDelegate? OnAnimationStarted;
         public event OnFrameChangedDelegate? OnFrameChanged;

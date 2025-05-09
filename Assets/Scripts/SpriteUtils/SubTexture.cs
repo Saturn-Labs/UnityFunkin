@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Xml.Serialization;
 
-namespace TextureUtils
+namespace SpriteUtils
 {
     [Serializable]
     public class SubTexture

@@ -2,7 +2,7 @@
 using System.Xml.Serialization;
 using UnityEngine;
 
-namespace TextureUtils
+namespace SpriteUtils
 {
     public static class SparrowAtlas
     {

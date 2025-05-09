@@ -36,6 +36,22 @@ namespace Animator.ForSprite
             get => _Offset;
             set => _Offset = value;
         }
+        
+        [SerializeField]
+        private int _FrameRate = 24;
+        public int FrameRate
+        {
+            get => _FrameRate;
+            set => _FrameRate = value;
+        }
+        
+        [SerializeField]
+        private bool _Reverse = false;
+        public bool Reverse
+        {
+            get => _Reverse;
+            set => _Reverse = value;
+        }
 
         public SpriteAnimation() {}
         public SpriteAnimation(IEnumerable<SpriteAnimationFrame> frames) : this()
