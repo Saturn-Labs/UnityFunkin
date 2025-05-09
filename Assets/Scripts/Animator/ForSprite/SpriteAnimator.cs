@@ -10,8 +10,8 @@ namespace Animator.ForSprite
     [Serializable]
     public class SpriteAnimator : AbstractAnimator<SpriteAnimation>
     {
-        private static readonly int UVOffset = Shader.PropertyToID("_UVOffset");
-        private static readonly int UVSides = Shader.PropertyToID("_UVSides");
+        private static readonly int SubTextureID = Shader.PropertyToID("_SubTexture");
+        public static Material? SparrowAtlasMaterial { get; private set; }
 
         public delegate void OnAnimationStartedDelegate(SpriteAnimator animator, SpriteAnimation animation);
         public delegate void OnFrameChangedDelegate(SpriteAnimator animator, SpriteAnimation animation, SpriteAnimationFrame frame, int frameIndex);
@@ -161,6 +161,14 @@ namespace Animator.ForSprite
             _IsPlaying = true;
         }
 
+        private void Awake()
+        {
+            if (!SparrowAtlasMaterial)
+            {
+                SparrowAtlasMaterial = Resources.Load<Material>("Materials/SparrowAtlas");
+            }
+        }
+
         private void Start()
         {
             _Renderer = GetComponent<SpriteRenderer>();
@@ -179,21 +187,45 @@ namespace Animator.ForSprite
                 if (CurrentAnimation is not null && CurrentFrame is not null && CurrentFrame != _LastFrame)
                 {
                     var frame = CurrentAnimation.GetFrame(CurrentFrame.Value);
+                    var frameSprite = frame.GetValue();
+                    if (!frameSprite)
+                        frameSprite = _Renderer.sprite;
+                    if (_Renderer.sprite != frameSprite)
+                        _Renderer.sprite = frameSprite;
+                    if (!frameSprite)
+                        return;
+                    var ppu = frameSprite.pixelsPerUnit;
+                    var targetObj = _Renderer.gameObject.transform;
                     if (UseOffsets)
                     {
-                        var obj = _Renderer.gameObject.transform;
-                        if (OffsetOnLocalPosition)
-                            obj.localPosition = new Vector3(frame.Offset.x, frame.Offset.y, obj.localPosition.z);
-                        else
-                            obj.position = new Vector3(frame.Offset.x, frame.Offset.y, obj.position.z);
-                    }
+                        if (!Mathf.Approximately(frameSprite.pivot.x / frameSprite.texture.width, 0) || !Mathf.Approximately(frameSprite.pivot.y / frameSprite.texture.height, 1))
+                            Debug.LogWarning($"SpriteAnimator: Sprite pivot is not (0, 1) / 'Top Left'. This may cause unexpected behavior on offsetting with 'frameX' and 'frameY'.\n X: {frameSprite.pivot.x}, Y: {frameSprite.pivot.y}");
+                        
+                        var animationOffset = new Vector2(
+                            CurrentAnimation.TreatOffsetAsPixels ? -CurrentAnimation.Offset.x / ppu : -CurrentAnimation.Offset.x,
+                            CurrentAnimation.TreatOffsetAsPixels ? CurrentAnimation.Offset.y / ppu : CurrentAnimation.Offset.y
+                        );
+                        
+                        var frameOffset = new Vector2(
+                            frame.TreatOffsetAsPixels ? -frame.Offset.x / ppu : -frame.Offset.x,
+                            frame.TreatOffsetAsPixels ? frame.Offset.y / ppu : frame.Offset.y
+                        );
 
-                    _Renderer.sprite = frame.GetValue();
-                    if (frame.ShouldUseUv)
+                        var offset = animationOffset + frameOffset;
+                        if (OffsetOnLocalPosition)
+                            targetObj.localPosition = new Vector3(offset.x, offset.y, targetObj.localPosition.z);
+                        else
+                            targetObj.position = new Vector3(offset.x, offset.y, targetObj.position.z);;
+                    }
+                    
+                    if (frameSprite && frame is { UseSubTexture: true, SubTextureRect: { } rect })
                     {
-                        _Renderer.material.SetVector(UVOffset, new Vector4(frame.UvOffset.x, -frame.UvOffset.y, 1f, 1f));
-                        _Renderer.material.SetVector(UVSides, new Vector4(0f, 1 - frame.UvSides.x, 1 - frame.UvSides.y, 0f));
-                        _Renderer.gameObject.transform.localScale = new Vector3(frame.UvSides.x, frame.UvSides.y, _Renderer.gameObject.transform.localScale.z);
+                        if (_Renderer.material.shader.name != "Custom/SparrowAtlas")
+                        {
+                            _Renderer.material = new Material(SparrowAtlasMaterial);
+                        }
+                        _Renderer.material.SetVector(SubTextureID, new Vector4(rect.x, rect.y, rect.width, rect.height));
+                        targetObj.transform.localScale = new Vector3(rect.width / frameSprite.texture.width, rect.height / frameSprite.texture.height, _Renderer.gameObject.transform.localScale.z);
                     }
 
                     _LastFrame = CurrentFrame.Value;

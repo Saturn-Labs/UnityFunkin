@@ -20,6 +20,22 @@ namespace Animator.ForSprite
             get => _Name;
             set => _Name = value;
         }
+        
+        [SerializeField]
+        private bool _TreatOffsetAsPixels = true;
+        public bool TreatOffsetAsPixels
+        {
+            get => _TreatOffsetAsPixels;
+            set => _TreatOffsetAsPixels = value;
+        }
+        
+        [SerializeField]
+        private Vector2 _Offset = Vector2.zero;
+        public Vector2 Offset
+        {
+            get => _Offset;
+            set => _Offset = value;
+        }
 
         public SpriteAnimation() {}
         public SpriteAnimation(IEnumerable<SpriteAnimationFrame> frames) : this()

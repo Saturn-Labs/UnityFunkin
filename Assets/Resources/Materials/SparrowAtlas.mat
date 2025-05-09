@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: SparrowSpriteMaterial
+  m_Name: SparrowAtlas
   m_Shader: {fileID: 4800000, guid: 26a2897750366fa48ae9b5d2c094220c, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -85,6 +85,7 @@ Material:
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
+    - _OutlineThickness: 0.001
     - _Parallax: 0.02
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -95,8 +96,11 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Flip: {r: 1, g: 1, b: 1, a: 1}
+    - _OutlineColor: {r: 0.5754717, g: 0, b: 0, a: 1}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
-    - _UVOffset: {r: 0.00048828125, g: -0.0004882813, b: 1, a: 1}
+    - _SubTexture: {r: 3164, g: 2159, b: 659, a: 646}
+    - _UVOffset: {r: 0.38623047, g: 0.2635498, b: 0.080444336, a: 0.07885742}
     - _UVSides: {r: 0, g: 0, b: 0, a: 0}
+    - _XmlOffset: {r: 0, g: 0, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

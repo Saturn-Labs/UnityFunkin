@@ -1,11 +1,10 @@
-Shader "Custom/SpriteUVSides"
+Shader "Custom/SparrowAtlas"
 {
     Properties
     {
         [PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
         _Color ("Tint", Color) = (1,1,1,1)
-        _UVOffset ("UV Offset (XY) and Scale (ZW)", Vector) = (0, 0, 1, 1)
-        _UVSides ("UV Sides (L, R, B, T)", Vector) = (0, 0, 0, 0)
+        _SubTexture ("SubTexture (X, Y, Width, Height)", Vector) = (0, 0, -1, -1)
     }
 
     SubShader
@@ -32,9 +31,9 @@ Shader "Custom/SpriteUVSides"
             #include "UnityCG.cginc"
 
             sampler2D _MainTex;
+            float4 _MainTex_TexelSize;
             fixed4 _Color;
-            float4 _UVOffset; // (offsetX, offsetY, scaleX, scaleY)
-            float4 _UVSides;  // (left, right, bottom, top)
+            float4 _SubTexture;
 
             struct appdata_t
             {
@@ -57,14 +56,33 @@ Shader "Custom/SpriteUVSides"
 
                 // Apply side trims
                 float2 uv = v.uv;
+                int4 subTex = int4(_SubTexture);
+                
+                float x = subTex.x;
+                float y = subTex.y;
+                float width = subTex.z;
+                float height = subTex.w;
 
-                float2 min = float2(_UVSides.x, _UVSides.z);           // left, bottom
-                float2 max = float2(1.0 - _UVSides.y, 1.0 - _UVSides.w); // right, top
+                if (width < 0)
+                {
+                    width = _MainTex_TexelSize.z;
+                }
 
-                uv = lerp(min, max, uv); // remap original UV into new range
+                if (height < 0)
+                {
+                    height = _MainTex_TexelSize.w;
+                }
 
+                float4 newUv = float4(0, 0, 1, 1);
+                newUv.x = x / _MainTex_TexelSize.z;
+                newUv.y = y / _MainTex_TexelSize.w;
+                newUv.z = width / _MainTex_TexelSize.z;
+                newUv.w = height / _MainTex_TexelSize.w;
+                
+                
                 // Apply offset and scale
-                uv = uv * _UVOffset.zw + _UVOffset.xy;
+                float fixedY = -(newUv.y - (1.0f - newUv.w));
+                uv = uv * float2(newUv.z, newUv.w) + float2(newUv.x, fixedY);
 
                 o.uv = uv;
                 o.color = v.color * _Color;
@@ -73,8 +91,7 @@ Shader "Custom/SpriteUVSides"
 
             fixed4 frag (v2f i) : SV_Target
             {
-                fixed4 texColor = tex2D(_MainTex, i.uv);
-                return texColor * i.color;
+                return tex2D(_MainTex, i.uv) * i.color;
             }
             ENDCG
         }

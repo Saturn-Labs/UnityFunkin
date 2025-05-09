@@ -14,35 +14,45 @@ public class Test : MonoBehaviour
     {
         var atlas = SparrowAtlas.Deserialize(sparrowText);
         
-        var leftAnimation = new SpriteAnimation()
+        var leftAnimation = new SpriteAnimation
         {
-            Name = "KB_DanceLeft"
+            Name = "KB_DanceLeft",
+            TreatOffsetAsPixels = true,
+            Offset = new Vector2(148, 103)
         };
+        //leftAnimation.Offset = new Vector2(0, leftAnimation.Offset.y);
         
-        var rightAnimation = new SpriteAnimation()
+        var rightAnimation = new SpriteAnimation
         {
-            Name = "KB_DanceRight"
+            Name = "KB_DanceRight",
+            TreatOffsetAsPixels = true,
+            Offset = new Vector2(107, 112)
         };
+        //rightAnimation.Offset = new Vector2(0, rightAnimation.Offset.y);
         
         foreach (var subTexture in atlas.SubTextures)
         {
             if (!subTexture.Name.StartsWith("KB_DanceLeft") && !subTexture.Name.StartsWith("KB_DanceRight"))
                 continue;
-            
-            const int ppu = 100;
-            var offX = (subTexture.Name.StartsWith("KB_DanceLeft") ? 148 : 107) / (float)ppu;
-            var offY = (subTexture.Name.StartsWith("KB_DanceLeft") ? 103 : 112) / (float)ppu;
-            //var fixedY = sprite.texture.height - subTexture.Y - subTexture.Height;
-            //var sprite = Sprite.Create(texture, new Rect(subTexture.X, fixedY, subTexture.Width, subTexture.Height), new Vector2(0f, 1f), ppu);
-            var offset = new Vector2((Math.Abs(subTexture.FrameX) / (float)ppu) - offX, (-Math.Abs(subTexture.FrameY) / (float)ppu) + offY);
 
-            var uvOffset = new Vector2(subTexture.X / (float)sprite.texture.width, subTexture.Y / (float)sprite.texture.height);
-            var uvSides = new Vector2(subTexture.Width / (float)sprite.texture.width, subTexture.Height / (float)sprite.texture.height);
+            var offset = new Vector2(subTexture.FrameX, subTexture.FrameY)
+            {
+                //x = 0,
+            };
+            var frame = new SpriteAnimationFrame
+            {
+                Name = subTexture.Name,
+                Sprite = sprite,
+                TreatOffsetAsPixels = true,
+                Offset = offset,
+                UseSubTexture = true,
+                SubTextureRect = new Rect(subTexture.X, subTexture.Y, subTexture.Width, subTexture.Height)
+            };
             
             if (subTexture.Name.StartsWith("KB_DanceLeft"))
-                leftAnimation.AddFrame(new SpriteAnimationFrame(subTexture.Name, sprite, offset, true, uvOffset, uvSides));
+                leftAnimation.AddFrame(frame);
             else
-                rightAnimation.AddFrame(new SpriteAnimationFrame(subTexture.Name, sprite, offset, true, uvOffset, uvSides));
+                rightAnimation.AddFrame(frame);
         }
         
         spriteAnimator.AddAnimation(leftAnimation);
