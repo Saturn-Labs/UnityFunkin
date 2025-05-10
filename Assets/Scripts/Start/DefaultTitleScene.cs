@@ -3,13 +3,12 @@ using Animator.ForSprite;
 using SpriteUtils;
 using UnityEngine;
 
-public class DefaultStartScene : MonoBehaviour
+public class DefaultTitleScene : MonoBehaviour
 {
     public float Time;
-    public SpriteAnimator logoAnimator;
+    public SpriteAnimator[] logoAnimators;
     public Sprite logoSprite;
     public TextAsset logoSparrowAtlas;
-    
     
     public void Start()
     {
@@ -18,7 +17,8 @@ public class DefaultStartScene : MonoBehaviour
         {
             new("logo", 24, new Vector2(0, 0), true, (_, _, texture) => texture.Name.StartsWith("logo bumpin"))
         });
-        logoAnimator.AddRange(animations);
+        foreach (var animator in logoAnimators)
+            animator.AddRange(animations);
     }
 
     private float _nextLogoBump;
@@ -29,7 +29,8 @@ public class DefaultStartScene : MonoBehaviour
         if (Time >= _nextLogoBump + bumpInterval)
         {
             _nextLogoBump = Time + bumpInterval;
-            logoAnimator.Play("logo");
+            foreach (var animator in logoAnimators)
+                animator.Play("logo");
         }
     }
 }

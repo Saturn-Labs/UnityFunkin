@@ -7,7 +7,9 @@ public class SparrowRenderer : MonoBehaviour
 {
     private static Material? _SparrowMaterial;
     private SpriteRenderer _SpriteRenderer = null!;
+    private MaterialPropertyBlock _MaterialPropertyBlock = null!;
 
+    public Vector3 Scale = new Vector3(1f, 1f, 1f);
     public uint x;
     public uint y;
     public uint width;
@@ -31,14 +33,15 @@ public class SparrowRenderer : MonoBehaviour
         get => _FrameHeight > 0 ? _FrameHeight : height;
         set => _FrameHeight = value;
     }
-    
+
     public Texture? texture => _SpriteRenderer.sprite?.texture;
     
     void OnEnable()
     {
         _SparrowMaterial ??= Resources.Load<Material>("Materials/SparrowAtlas");
         _SpriteRenderer = GetComponent<SpriteRenderer>();
-        _SpriteRenderer.material = new Material(_SparrowMaterial);
+        _SpriteRenderer.sharedMaterial = _SparrowMaterial;
+        _MaterialPropertyBlock = new MaterialPropertyBlock();
     }
 
     void OnDisable()
@@ -51,14 +54,17 @@ public class SparrowRenderer : MonoBehaviour
             return;
         
         transform.localScale = new Vector3(
-            frameWidth / (float)texture.width,
-            frameHeight / (float)texture.height,
-            transform.localScale.z
+            frameWidth / (float)texture.width * Scale.x,
+            frameHeight / (float)texture.height * Scale.y,
+            transform.localScale.z * Scale.z
         );
         
-        _SpriteRenderer.material.SetVector("_SubTexture", new Vector4(x, y, width, height));
-        _SpriteRenderer.material.SetVector("_SubTextureFrame", new Vector4(frameX, frameY, frameWidth, frameHeight));
-        _SpriteRenderer.material.SetFloat("_PixelsPerUnit", _SpriteRenderer.sprite.pixelsPerUnit);
+        
+        
+        _MaterialPropertyBlock.SetVector("_SubTexture", new Vector4(x, y, width, height));
+        _MaterialPropertyBlock.SetVector("_SubTextureFrame", new Vector4(frameX, frameY, frameWidth, frameHeight));
+        _MaterialPropertyBlock.SetFloat("_PixelsPerUnit", _SpriteRenderer.sprite.pixelsPerUnit);
+        _SpriteRenderer.SetPropertyBlock(_MaterialPropertyBlock);
     }
 
     private void OnDrawGizmosSelected()
