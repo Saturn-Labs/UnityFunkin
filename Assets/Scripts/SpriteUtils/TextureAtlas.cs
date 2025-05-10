@@ -21,7 +21,6 @@ namespace SpriteUtils
             var animation = new SpriteAnimation()
             {
                 Name = descriptor.Name,
-                TreatOffsetAsPixels = descriptor.TreatOffsetAsPixels,
                 Offset = descriptor.Offset,
                 FrameRate = descriptor.FrameRate,
                 Reverse = descriptor.Reverse
@@ -35,10 +34,7 @@ namespace SpriteUtils
                     {
                         Name = subTexture.Name,
                         Sprite = sprite,
-                        TreatOffsetAsPixels = true,
-                        Offset = new Vector2(subTexture.FrameX, subTexture.FrameY),
-                        UseSubTexture = true,
-                        SubTextureRect = new Rect(subTexture.X, subTexture.Y, subTexture.Width, subTexture.Height)
+                        SubTexture = subTexture
                     });
                 }
             }

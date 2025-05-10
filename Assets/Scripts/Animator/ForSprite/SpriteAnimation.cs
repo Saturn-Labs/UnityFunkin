@@ -22,14 +22,6 @@ namespace Animator.ForSprite
         }
         
         [SerializeField]
-        private bool _TreatOffsetAsPixels = true;
-        public bool TreatOffsetAsPixels
-        {
-            get => _TreatOffsetAsPixels;
-            set => _TreatOffsetAsPixels = value;
-        }
-        
-        [SerializeField]
         private Vector2 _Offset = Vector2.zero;
         public Vector2 Offset
         {

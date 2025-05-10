@@ -1,4 +1,5 @@
 ﻿using System;
+using SpriteUtils;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -9,10 +10,7 @@ namespace Animator.ForSprite
     {
         public string Name = "Unnamed Frame";
         public Sprite? Sprite = null;
-        public bool TreatOffsetAsPixels = true;
-        public Vector2 Offset = Vector2.zero;
-        public bool UseSubTexture = false;
-        public Rect? SubTextureRect = null;
+        public SubTexture? SubTexture = null;
         
         public Sprite? GetValue()
         {

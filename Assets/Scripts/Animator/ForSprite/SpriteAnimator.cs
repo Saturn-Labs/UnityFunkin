@@ -10,15 +10,13 @@ namespace Animator.ForSprite
     [Serializable]
     public class SpriteAnimator : AbstractAnimator<SpriteAnimation>
     {
-        private static readonly int SubTextureID = Shader.PropertyToID("_SubTexture");
-        public static Material? SparrowAtlasMaterial { get; private set; }
-
         public delegate void OnAnimationStartedDelegate(SpriteAnimator animator, SpriteAnimation animation);
         public delegate void OnFrameChangedDelegate(SpriteAnimator animator, SpriteAnimation animation, SpriteAnimationFrame frame, int frameIndex);
         public delegate void OnAnimationFinishedDelegate(SpriteAnimator animator, SpriteAnimation animation);
         
         private SpriteRenderer? _Renderer;
-
+        private SparrowRenderer? _SparrowRenderer;
+        
         [SerializeField]
         private List<SpriteAnimation> _Animations = new();
         public override IReadOnlyList<SpriteAnimation> Animations => _Animations;
@@ -86,7 +84,6 @@ namespace Animator.ForSprite
 
         public bool StartOnFirstAnimation;
         public bool UseOffsets;
-        public bool OffsetOnLocalPosition = true;
         public bool UseAnimationFrameRate = true;
         
         public event OnAnimationStartedDelegate? OnAnimationStarted;
@@ -173,10 +170,7 @@ namespace Animator.ForSprite
 
         private void Awake()
         {
-            if (!SparrowAtlasMaterial)
-            {
-                SparrowAtlasMaterial = Resources.Load<Material>("Materials/SparrowAtlas");
-            }
+
         }
 
         private void Start()
@@ -204,38 +198,33 @@ namespace Animator.ForSprite
                         _Renderer.sprite = frameSprite;
                     if (!frameSprite)
                         return;
-                    var ppu = frameSprite.pixelsPerUnit;
                     var targetObj = _Renderer.gameObject.transform;
                     if (UseOffsets)
                     {
-                        if (!Mathf.Approximately(frameSprite.pivot.x / frameSprite.texture.width, 0) || !Mathf.Approximately(frameSprite.pivot.y / frameSprite.texture.height, 1))
-                            Debug.LogWarning($"SpriteAnimator: Sprite pivot is not (0, 1) / 'Top Left'. This may cause unexpected behavior on offsetting with 'frameX' and 'frameY'.\n X: {frameSprite.pivot.x}, Y: {frameSprite.pivot.y}");
-                        
-                        var animationOffset = new Vector2(
-                            CurrentAnimation.TreatOffsetAsPixels ? -CurrentAnimation.Offset.x / ppu : -CurrentAnimation.Offset.x,
-                            CurrentAnimation.TreatOffsetAsPixels ? CurrentAnimation.Offset.y / ppu : CurrentAnimation.Offset.y
-                        );
-                        
-                        var frameOffset = new Vector2(
-                            frame.TreatOffsetAsPixels ? -frame.Offset.x / ppu : -frame.Offset.x,
-                            frame.TreatOffsetAsPixels ? frame.Offset.y / ppu : frame.Offset.y
-                        );
-
-                        var offset = animationOffset + frameOffset;
-                        if (OffsetOnLocalPosition)
-                            targetObj.localPosition = new Vector3(offset.x, offset.y, targetObj.localPosition.z);
-                        else
-                            targetObj.position = new Vector3(offset.x, offset.y, targetObj.position.z);;
+                        var animationOffset = new Vector2(CurrentAnimation.Offset.x, CurrentAnimation.Offset.y) / frameSprite.pixelsPerUnit;
+                        targetObj.localPosition = new Vector3(-animationOffset.x, animationOffset.y, targetObj.localPosition.z);
                     }
                     
-                    if (frameSprite && frame is { UseSubTexture: true, SubTextureRect: { } rect })
+                    if (frameSprite && frame is { SubTexture: { } subTexture })
                     {
-                        if (_Renderer.material.shader.name != "Custom/SparrowAtlas")
+                        if (!_SparrowRenderer)
                         {
-                            _Renderer.material = new Material(SparrowAtlasMaterial);
+                            _SparrowRenderer = GetComponent<SparrowRenderer>();
+                            if (!_SparrowRenderer)
+                                Debug.LogWarning("SparrowRenderer not found on the same GameObject as SpriteAnimator, but a frame is trying to use SubTextures.");
                         }
-                        _Renderer.material.SetVector(SubTextureID, new Vector4(rect.x, rect.y, rect.width, rect.height));
-                        targetObj.transform.localScale = new Vector3(rect.width / frameSprite.texture.width, rect.height / frameSprite.texture.height, _Renderer.gameObject.transform.localScale.z);
+                        
+                        if (_SparrowRenderer)
+                        {
+                            _SparrowRenderer.x = (uint)subTexture.X;
+                            _SparrowRenderer.y = (uint)subTexture.Y;
+                            _SparrowRenderer.width = (uint)subTexture.Width;
+                            _SparrowRenderer.height = (uint)subTexture.Height;
+                            _SparrowRenderer.frameX = subTexture.FrameX;
+                            _SparrowRenderer.frameY = subTexture.FrameY;
+                            _SparrowRenderer.frameWidth = (uint)subTexture.FrameWidth;
+                            _SparrowRenderer.frameHeight = (uint)subTexture.FrameHeight;
+                        }
                     }
 
                     _LastFrame = CurrentFrame.Value;

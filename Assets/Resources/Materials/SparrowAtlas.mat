@@ -86,10 +86,13 @@ Material:
     - _Mode: 0
     - _OcclusionStrength: 1
     - _OutlineThickness: 0.001
+    - _PPU: 100
     - _Parallax: 0.02
+    - _PixelsPerUnit: 100
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
+    - _TestFloat: 0
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
@@ -98,7 +101,9 @@ Material:
     - _Flip: {r: 1, g: 1, b: 1, a: 1}
     - _OutlineColor: {r: 0.5754717, g: 0, b: 0, a: 1}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
-    - _SubTexture: {r: 3164, g: 2159, b: 659, a: 646}
+    - _SubTexture: {r: 0, g: 0, b: 0, a: 0}
+    - _SubTextureFrame: {r: 0, g: 0, b: 0, a: 0}
+    - _SubTextureRegion: {r: 0, g: 0, b: 1, a: 1}
     - _UVOffset: {r: 0.38623047, g: 0.2635498, b: 0.080444336, a: 0.07885742}
     - _UVSides: {r: 0, g: 0, b: 0, a: 0}
     - _XmlOffset: {r: 0, g: 0, b: 1, a: 1}

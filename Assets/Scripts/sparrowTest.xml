@@ -1,0 +1,6 @@
+<TextureAtlas imagePath="sparrowTest.png">
+    <SubTexture name="Down" x="0" y="0" width="20" height="40" frameX="-10" frameY="-10" frameWidth="30" frameHeight="50"/>
+    <SubTexture name="Left" x="20" y="0" width="40" height="20" frameX="-10" frameY="-10" frameWidth="50" frameHeight="30"/>
+    <SubTexture name="Right" x="20" y="20" width="40" height="20" frameX="-10" frameY="-10" frameWidth="50" frameHeight="30"/>
+    <SubTexture name="Up" x="60" y="0" width="20" height="40" frameX="-10" frameY="-10" frameWidth="30" frameHeight="50"/>
+</TextureAtlas>
