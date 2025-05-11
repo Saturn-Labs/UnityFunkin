@@ -6,6 +6,7 @@ using ModManagement.State;
 using TransitionManagement;
 using TransitionManagement.Default;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Startup : MonoBehaviour
 {
@@ -38,5 +39,6 @@ public class Startup : MonoBehaviour
         modSystem.OnStateChanged += StateChanged;
         yield return new WaitUntil(() => result.IsCompleted);
         modSystem.OnStateChanged -= StateChanged;
+        transitionSystem.StartCoroutine(transitionSystem.LoadScene("VanillaTitleScene"));
     }
 }

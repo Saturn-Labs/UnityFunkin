@@ -3,7 +3,7 @@ Shader "Custom/SparrowAtlas"
     Properties
     {
         [PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
-        [PerRendererData] _Color ("Tint", Color) = (1,1,1,1)
+        _Color ("Tint", Color) = (1,1,1,1)
         [PerRendererData] _SubTexture ("SubTexture (X, Y, Width, Height)", Vector) = (0, 0, -1, -1)
         [PerRendererData] _SubTextureFrame ("SubTexture (FrameX, FrameY, FrameWidth, FrameHeight)", Vector) = (0, 0, -1, -1)
         [PerRendererData] _PixelsPerUnit ("Pixels Per Unit", Float) = 100

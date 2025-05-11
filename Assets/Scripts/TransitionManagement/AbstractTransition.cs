@@ -41,10 +41,18 @@ namespace TransitionManagement
             ConstructedTarget.SetActive(false);
             return true;
         }
+
+        public virtual void OnSceneLoading(AsyncOperation operation)
+        {
+            Debug.Log($"[AbstractTransition]: Loading scene: {Name}");
+        }
         
-        public virtual void OnSceneLoading(AsyncOperation operation) { }
         public virtual void OnSceneLoadingProgress(AsyncOperation operation) { }
-        public virtual void OnSceneLoaded(AsyncOperation operation) { }
+
+        public virtual void OnSceneLoaded(AsyncOperation operation)
+        {
+            Debug.Log($"[AbstractTransition]: Loaded scene: {Name}");
+        }
 
         public virtual void OnObjectReady(GameObject obj, Canvas canvas)
         {

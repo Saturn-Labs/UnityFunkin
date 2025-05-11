@@ -35,6 +35,8 @@ namespace Animator.ForSprite
 
         [SerializeField]
         private int _LastFrame = -1;
+        [SerializeField]
+        private SpriteAnimation? _LastAnimation;
 
         public override int? CurrentFrame
         {
@@ -183,8 +185,31 @@ namespace Animator.ForSprite
             }
         }
 
+        private void SetAnimationOffset()
+        {
+            if (CurrentAnimation is not null && _Renderer && _Renderer.sprite)
+            {
+                if (UseOffsets)
+                {
+                    var animationOffset = new Vector2(CurrentAnimation.Offset.x, CurrentAnimation.Offset.y) / _Renderer.sprite.pixelsPerUnit;
+                    transform.localPosition = new Vector3(-animationOffset.x, animationOffset.y, transform.localPosition.z);
+                }
+            }
+        }
+        
+        private void LateUpdate()
+        {
+            
+        }
+
         private void Update()
         {
+            if (_LastAnimation != CurrentAnimation)
+            {
+                _LastAnimation = CurrentAnimation;
+                SetAnimationOffset();
+            }
+            
             if (_Renderer && IsPlaying)
             {
                 _Time += UnityEngine.Time.deltaTime;
@@ -198,13 +223,6 @@ namespace Animator.ForSprite
                         _Renderer.sprite = frameSprite;
                     if (!frameSprite)
                         return;
-                    var targetObj = _Renderer.gameObject.transform;
-                    if (UseOffsets)
-                    {
-                        var animationOffset = new Vector2(CurrentAnimation.Offset.x, CurrentAnimation.Offset.y) / frameSprite.pixelsPerUnit;
-                        targetObj.localPosition = new Vector3(-animationOffset.x, animationOffset.y, targetObj.localPosition.z);
-                    }
-                    
                     if (frameSprite && frame is { SubTexture: { } subTexture })
                     {
                         if (!_SparrowRenderer)

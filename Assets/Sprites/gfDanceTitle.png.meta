@@ -94,7 +94,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 2
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -103,9 +103,9 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
-  spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMode: 1
+  spriteExtrude: 0
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
@@ -129,7 +129,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
+    maxTextureSize: 4096
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
@@ -613,7 +613,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -622,7 +622,27 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      gfDanceTitle_0: -2616423655936760011
+      gfDanceTitle_1: 3601287655818028722
+      gfDanceTitle_10: -1526567879481376503
+      gfDanceTitle_11: 7041470420420955669
+      gfDanceTitle_12: 7496905063943439906
+      gfDanceTitle_13: 3473003694072279687
+      gfDanceTitle_14: 7163847682532705389
+      gfDanceTitle_15: 3686738038771930043
+      gfDanceTitle_16: -6589388183230762602
+      gfDanceTitle_17: 8698180709779507172
+      gfDanceTitle_18: 8765991744939122715
+      gfDanceTitle_19: -4113028687990221451
+      gfDanceTitle_2: -5457031584035685030
+      gfDanceTitle_3: -3957801015362407366
+      gfDanceTitle_4: 2712039596056370274
+      gfDanceTitle_5: 8112744535564468773
+      gfDanceTitle_6: -3135598902614711558
+      gfDanceTitle_7: 2560847487762707990
+      gfDanceTitle_8: 3346327203307386365
+      gfDanceTitle_9: -1021433083195559960
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

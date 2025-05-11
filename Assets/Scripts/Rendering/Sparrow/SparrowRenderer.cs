@@ -8,12 +8,13 @@ public class SparrowRenderer : MonoBehaviour
     private static Material? _SparrowMaterial;
     private SpriteRenderer _SpriteRenderer = null!;
     private MaterialPropertyBlock _MaterialPropertyBlock = null!;
-
-    public Vector3 Scale = new Vector3(1f, 1f, 1f);
+    
+    [Header("SubTexture Parameters")]
     public uint x;
     public uint y;
     public uint width;
     public uint height;
+    [Header("Rectangle Parameters")]
     public int frameX;
     public int frameY;
     
@@ -35,6 +36,8 @@ public class SparrowRenderer : MonoBehaviour
     }
 
     public Texture? texture => _SpriteRenderer.sprite?.texture;
+    public Sprite? sprite => _SpriteRenderer.sprite;
+    public float pixelsPerUnit => _SpriteRenderer.sprite?.pixelsPerUnit ?? 100f;
     
     void OnEnable()
     {
@@ -53,24 +56,40 @@ public class SparrowRenderer : MonoBehaviour
         if (!texture)
             return;
         
-        transform.localScale = new Vector3(
-            frameWidth / (float)texture.width * Scale.x,
-            frameHeight / (float)texture.height * Scale.y,
-            transform.localScale.z * Scale.z
+        if (_SpriteRenderer.drawMode != SpriteDrawMode.Sliced)
+            _SpriteRenderer.drawMode = SpriteDrawMode.Sliced;
+        _SpriteRenderer.size = new Vector2(
+            frameWidth / pixelsPerUnit,
+            frameHeight / pixelsPerUnit
         );
-        
-        
         
         _MaterialPropertyBlock.SetVector("_SubTexture", new Vector4(x, y, width, height));
         _MaterialPropertyBlock.SetVector("_SubTextureFrame", new Vector4(frameX, frameY, frameWidth, frameHeight));
-        _MaterialPropertyBlock.SetFloat("_PixelsPerUnit", _SpriteRenderer.sprite.pixelsPerUnit);
+        _MaterialPropertyBlock.SetFloat("_PixelsPerUnit", pixelsPerUnit);
         _SpriteRenderer.SetPropertyBlock(_MaterialPropertyBlock);
     }
-
+    
     private void OnDrawGizmosSelected()
     {
-        if (!_SpriteRenderer)
+        if (!_SpriteRenderer || !_SpriteRenderer.sprite || !texture || !sprite)
             return;
+        var oldColor = Gizmos.color;
         
+        // Draw frame rectangle
+        Gizmos.color = Color.red;
+        var frameOffset = new Vector2(
+            (0.5f - sprite.pivot.x / texture.width) * (frameWidth / pixelsPerUnit),
+            (0.5f - sprite.pivot.y / texture.height) * (frameHeight / pixelsPerUnit)
+        );
+        Gizmos.DrawWireCube(transform.position + (Vector3)frameOffset, new Vector3(frameWidth / pixelsPerUnit * transform.lossyScale.x, frameHeight / pixelsPerUnit * transform.lossyScale.y, 0));
+        
+        // Draw sub-texture rectangle
+        Gizmos.color = Color.cyan;
+        var subTextureOffset = new Vector2(
+            (0.5f - sprite.pivot.x / texture.width) * (width / pixelsPerUnit) - frameX / pixelsPerUnit - (frameWidth - width) / pixelsPerUnit / 2f,
+            (0.5f - sprite.pivot.y / texture.height) * (height / pixelsPerUnit) + frameY / pixelsPerUnit + (frameHeight - height) / pixelsPerUnit / 2f
+        );
+        Gizmos.DrawWireCube(transform.position + (Vector3)subTextureOffset, new Vector3(width / pixelsPerUnit * transform.lossyScale.x, height / pixelsPerUnit * transform.lossyScale.y, 0));
+        Gizmos.color = oldColor;
     }
 }
