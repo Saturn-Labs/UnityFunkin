@@ -9,6 +9,7 @@ using ModManagement.Abstractions;
 using ModManagement.Attributes;
 using ModManagement.Default;
 using ModManagement.State;
+using Mono.Cecil;
 using UnityEngine;
 using Utils;
 
@@ -53,8 +54,8 @@ namespace ModManagement
 
         public delegate void OnStateChangedDelegate(ModSystem system, ModSystemState state, string stateDescription);
         
-        [SerializeField]
         public static AppDomain ModDomain => AppDomain.CurrentDomain;
+        
         private readonly List<AbstractMod> _Mods = new();
         private readonly List<Assembly> _LoadedModAssemblies = new();
         [SerializeField]
@@ -103,7 +104,7 @@ namespace ModManagement
             }
             
             // Load the mod and add it to the list
-            modType.GetProperty("Directory")?.GetSetMethod(true).Invoke(modInstance, new object[]
+            typeof(AbstractMod).GetProperty("Directory")?.GetSetMethod(true).Invoke(modInstance, new object[]
             {
                 baseDirectory
             });
@@ -145,40 +146,48 @@ namespace ModManagement
                 }
                 
                 // Get the mod directory from the path system
-                var modsDirectory = PathUtils.Process("mods:");
-                if (!Directory.Exists(modsDirectory))
+                var modMainDirectories = new string[]
                 {
-                    Debug.LogWarning($"[ModSystem]: Mod directory '{modsDirectory}' does not exist.");
-                    yield break;
-                }
-            
-                // Get all DLL files in the mod directory and its subdirectories
-                var modDirectories = Directory.GetDirectories(modsDirectory, "*", SearchOption.AllDirectories);
-                foreach (var modDirectory in modDirectories)
+                    PathUtils.Process("mods:"),
+                    PathUtils.Process("persistent_mods:")
+                };
+                
+                foreach (var modMainDirectory in modMainDirectories)
                 {
-                    var assemblyFiles = Directory.GetFiles(modDirectory, "*.dll", SearchOption.AllDirectories);
-                    foreach (var assemblyFile in assemblyFiles)
+                    if (!Directory.Exists(modMainDirectory))
                     {
-                        // Check if the assembly is already loaded
-                        if (_LoadedModAssemblies.Any(a => a.Location == assemblyFile))
+                        Debug.LogWarning($"[ModSystem]: Mod directory '{modMainDirectory}' does not exist.");
+                        continue;
+                    }
+                    
+                    // Get all DLL files in the mod directory and its subdirectories
+                    var modDirectories = Directory.GetDirectories(modMainDirectory, "*", SearchOption.TopDirectoryOnly);
+                    foreach (var modDirectory in modDirectories)
+                    {
+                        var assemblyFiles = Directory.GetFiles(modDirectory, "*.dll", SearchOption.TopDirectoryOnly);
+                        foreach (var assemblyFile in assemblyFiles)
                         {
-                            Debug.LogWarning($"[ModSystem]: Assembly '{assemblyFile}' is already loaded.");
-                            continue;
-                        }
+                            // Check if the assembly is already loaded
+                            if (_LoadedModAssemblies.Any(a => a.Location == assemblyFile))
+                            {
+                                Debug.LogWarning($"[ModSystem]: Assembly '{assemblyFile}' is already loaded.");
+                                continue;
+                            }
                         
-                        // Load the assembly and add it to the list
-                        ChangeState(ModSystemState.LoadingAssembly, $"[ModSystem] Loading mod assembly '{Path.GetFileName(assemblyFile)}'...");
-                        try
-                        {
-                            LoadModAssembly(assemblyFile, modDirectory);
-                        }
-                        catch (Exception e)
-                        {
-                            Debug.LogError(e);
+                            // Load the assembly and add it to the list
+                            ChangeState(ModSystemState.LoadingAssembly, $"[ModSystem] Loading mod assembly '{Path.GetFileName(assemblyFile)}'...");
+                            try
+                            {
+                                LoadModAssembly(assemblyFile, modDirectory);
+                            }
+                            catch (Exception e)
+                            {
+                                Debug.LogError(e);
+                            }
                         }
                     }
                 }
-
+                
                 ChangeState(ModSystemState.Idling, $"[ModSystem] Idling...");
                 CallSetCompleted(result);
             }

@@ -1546,8 +1546,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a23f79f8a1a0de04a82ff4e6f2726cde, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sparrow: {fileID: 4900000, guid: e54ccb128455c6847b2501010f5417fd, type: 3}
-  sprite: {fileID: 21300000, guid: 67e20fc9a891da5428f6c63df2ed9681, type: 3}
+  sparrow: {fileID: 4900000, guid: 7a12c8ae3cf43e640b5490651a42af44, type: 3}
+  sprite: {fileID: 21300000, guid: 64013038bba7e4e4c8d1d02ac242f18d, type: 3}
   spriteAnimators:
   - {fileID: 2076456736}
   - {fileID: 1742071970}

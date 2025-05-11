@@ -12,6 +12,7 @@ namespace FileSystem
             { "app:", () => Application.dataPath },
             { "appdata:", () => Application.persistentDataPath },
             { "mods:", () => Path.Combine(Application.dataPath, "..", "mods") },
+            { "persistent_mods:", () => Path.Combine(Application.persistentDataPath, "mods") },
             { "cache:", () => Application.temporaryCachePath },
             { "user:", () => Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) },
             { "docs:", () => Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) }
