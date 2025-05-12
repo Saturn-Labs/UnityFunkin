@@ -1,0 +1,15 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Saturn-Labs/UnityFunkin/refs/heads/main/Assets/Resources/Schemas/mod_descriptor_schema.json",
+    "format_version": 0,
+    "name": "CustomMod",
+    "description": "This is a custom mod.",
+    "identifier": "mod@ryd3v@custommod",
+    "uuid": "f0d5f253-f75a-493c-9073-3b483eb027c8",
+    "version": "1.0.0",
+    "dependencies": [
+        {
+            "identifier": "mod@ryd3v@dependencymod",
+            "version": ">=1.0.0 <1.1.0"
+        }
+    ]
+}

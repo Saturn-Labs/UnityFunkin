@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using ModManagement;
-using ModManagement.Default;
 using ModManagement.State;
 using TransitionManagement;
 using TransitionManagement.Default;
@@ -35,10 +34,11 @@ public class Startup : MonoBehaviour
         }
         
         yield return transitionSystem.MakeTransitionActive();
-        var result = modSystem.LoadModAssembliesAsync();
+        //var result = modSystem.LoadModAssembliesAsync();
         modSystem.OnStateChanged += StateChanged;
-        yield return new WaitUntil(() => result.IsCompleted);
+        //yield return new WaitUntil(() => result.IsCompleted);
         modSystem.OnStateChanged -= StateChanged;
-        transitionSystem.StartCoroutine(transitionSystem.LoadScene("VanillaTitleScene"));
+        
+        transitionSystem.StartCoroutine(transitionSystem.LoadScene("TestScene"));
     }
 }

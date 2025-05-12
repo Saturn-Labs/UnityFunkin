@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Animator.ForSprite;
+using ModManagement.Models;
 using SpriteUtils;
 using UnityEngine;
 using UnityEngine.Pool;
@@ -12,6 +13,9 @@ public class TestScript : MonoBehaviour
     public TextAsset sparrow;
     public Sprite sprite;
     public SpriteAnimator[] spriteAnimators;
+    
+    public SpriteRenderer spriteRenderer;
+    public TextAsset descriptor;
     
     void Start()
     {
@@ -27,6 +31,26 @@ public class TestScript : MonoBehaviour
             animator.Play("main");
         }
         //left = Random.value > 0.5f;
+        
+        var assets = AssetBundle.LoadFromFile("Assets/AssetBundles/assets.bundle");
+        var scenes = AssetBundle.LoadFromFile("Assets/AssetBundles/scenes.bundle");
+        var assetPaths = assets.GetAllAssetNames();
+        var scenePaths = scenes.GetAllScenePaths();
+        foreach (var scenePath in scenePaths)
+        {
+            Debug.Log(scenePath);
+        }
+        
+        foreach (var assetPath in assetPaths)
+        {
+            Debug.Log(assetPath);
+        }
+
+        var shader = assets.LoadAsset<Shader>("Assets/mod@ryd3v@custommod/Images/TestShader.shader");
+        spriteRenderer.material = new Material(shader);
+        
+        var desc = ModDescriptor.FromJson(descriptor.text);
+        Debug.Log(desc);
     }
 
     private double rand;
