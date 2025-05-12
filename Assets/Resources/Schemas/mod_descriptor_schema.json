@@ -33,9 +33,6 @@
 					"identifier": {
 						"type": "string"
 					},
-					"uuid": {
-						"type": "string"
-					},
 					"version": {
 						"type": "string"
 					}
