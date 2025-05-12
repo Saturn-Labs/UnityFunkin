@@ -1,55 +1,69 @@
 {
-  "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "A mod descri",
-  "type": "object",
-  "properties": {
-    "mod": {
-      "type": "string"
-    },
-    "description": {
-      "type": "string"
-    },
-    "identifier": {
-      "type": "string"
-    },
-    "uuid": {
-      "type": "string",
-      "format": "regex",
-      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
-    },
-    "version": {
-      "type": "string",
-      "format": "regex",
-      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
-    },
-    "dependencies": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "identifier": {
-            "type": "string"
-          },
-          "uuid": {
-            "type": "string"
-          },
-          "version": {
-            "type": "string"
-          }
-        },
-        "anyOf": [
-            { "required": ["identifier"] },
-            { "required": ["uuid"] }
-        ],
-        "required": [
-          "version"
-        ]
-      }
-    }
-  },
-  "required": [
-    "mod",
-    "identifier",
-    "uuid"
-  ]
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"title": "A UnityFunkin mod descriptor.",
+	"type": "object",
+	"properties": {
+		"format_version": {
+			"type": "string",
+			"format": "regex",
+			"pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
+		},
+		"mod": {
+			"type": "string"
+		},
+		"description": {
+			"type": "string"
+		},
+		"identifier": {
+			"type": "string"
+		},
+		"uuid": {
+			"type": "string",
+			"format": "regex",
+			"pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+		},
+		"version": {
+			"type": "string",
+			"format": "regex",
+			"pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
+		},
+		"dependencies": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"identifier": {
+						"type": "string"
+					},
+					"uuid": {
+						"type": "string"
+					},
+					"version": {
+						"type": "string"
+					}
+				},
+				"anyOf": [
+					{
+						"required": [
+							"identifier"
+						]
+					},
+					{
+						"required": [
+							"uuid"
+						]
+					}
+				],
+				"required": [
+					"version"
+				]
+			}
+		}
+	},
+	"required": [
+		"mod",
+		"identifier",
+		"uuid",
+		"format_version"
+	]
 }
