@@ -37,19 +37,8 @@
 						"type": "string"
 					}
 				},
-				"anyOf": [
-					{
-						"required": [
-							"identifier"
-						]
-					},
-					{
-						"required": [
-							"uuid"
-						]
-					}
-				],
 				"required": [
+					"identifier",
 					"version"
 				]
 			}
