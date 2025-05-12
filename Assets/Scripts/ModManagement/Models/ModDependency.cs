@@ -13,13 +13,13 @@ namespace ModManagement.Models
         /// The identifier of the dependency mod.
         /// </summary>
         [JsonProperty("identifier")]
-        public string Identifier { get; private set; }
+        public string Identifier { get; private set; } = string.Empty;
 
         /// <summary>
         /// The version range of the dependency mod.
         /// </summary>
         [JsonProperty("version")]
         [JsonConverter(typeof(VersionRangeConverter))]
-        public Range Version { get; private set; } = null!;
+        public Range Version { get; private set; } = new("*");
     }
 }
