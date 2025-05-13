@@ -39,6 +39,6 @@ public class Startup : MonoBehaviour
         //yield return new WaitUntil(() => result.IsCompleted);
         modSystem.OnStateChanged -= StateChanged;
         
-        transitionSystem.StartCoroutine(transitionSystem.LoadScene("TestScene"));
+        transitionSystem.StartCoroutine(transitionSystem.LoadScene("TitleScene"));
     }
 }

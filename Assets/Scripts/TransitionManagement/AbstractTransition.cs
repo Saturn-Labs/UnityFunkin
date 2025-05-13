@@ -9,9 +9,9 @@ namespace TransitionManagement
     public abstract class AbstractTransition
     {
         public string Name { get; private set; }
-        public GameObject? ConstructedTarget { get; private set; } = null;
+        public RectTransform? ConstructedTarget { get; private set; } = null;
         public bool IsConstructed => ConstructedTarget is not null;
-        public bool IsActive => ConstructedTarget?.activeSelf ?? false;
+        public bool IsActive => ConstructedTarget?.gameObject.activeSelf ?? false;
         public float ActivationDuration { get; set; } = 1f;
         public float DeactivationDuration { get; set; } = 1f;
 
@@ -30,7 +30,7 @@ namespace TransitionManagement
         {
             if (ConstructedTarget is null)
                 return false;
-            ConstructedTarget?.SetActive(true);
+            ConstructedTarget.gameObject.SetActive(true);
             return true;
         }
         
@@ -38,7 +38,7 @@ namespace TransitionManagement
         {
             if (ConstructedTarget is null) 
                 return false;
-            ConstructedTarget.SetActive(false);
+            ConstructedTarget.gameObject.SetActive(false);
             return true;
         }
 

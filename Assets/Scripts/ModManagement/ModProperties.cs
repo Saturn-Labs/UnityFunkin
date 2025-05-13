@@ -6,13 +6,13 @@ namespace ModManagement
 {
     public class ModProperties
     {
-        public ModDescriptor Descriptor { get; private set; }
+        public ModManifest Manifest { get; private set; }
         public string Directory { get; private set; }
         
-        internal ModProperties(string directory, ModDescriptor descriptor)
+        internal ModProperties(string directory, ModManifest manifest)
         {
             Directory = directory;
-            Descriptor = descriptor;
+            Manifest = manifest;
         }
     }
 }

@@ -87,6 +87,9 @@ namespace Animator.ForSprite
         public bool StartOnFirstAnimation;
         public bool UseOffsets;
         public bool UseAnimationFrameRate = true;
+        public bool UseSparrowAtlas = true;
+        
+        public bool IsValidSprite => _Renderer && _Renderer.sprite;
         
         public event OnAnimationStartedDelegate? OnAnimationStarted;
         public event OnFrameChangedDelegate? OnFrameChanged;
@@ -172,88 +175,51 @@ namespace Animator.ForSprite
 
         private void Awake()
         {
-
+            _Renderer = GetComponent<SpriteRenderer>();
         }
 
         private void Start()
         {
-            _Renderer = GetComponent<SpriteRenderer>();
-            if (StartOnFirstAnimation)
-            {
-                if (Animations.Count > 0)
-                    _CurrentAnimation = Animations[0];
-            }
-        }
-
-        private void SetAnimationOffset()
-        {
-            if (CurrentAnimation is not null && _Renderer && _Renderer.sprite)
-            {
-                if (UseOffsets)
-                {
-                    var animationOffset = new Vector2(CurrentAnimation.Offset.x, CurrentAnimation.Offset.y) / _Renderer.sprite.pixelsPerUnit;
-                    transform.localPosition = new Vector3(-animationOffset.x, animationOffset.y, transform.localPosition.z);
-                }
-            }
+            if (!StartOnFirstAnimation || Animations.Count <= 0) 
+                return;
+            _CurrentAnimation = Animations[0];
         }
         
-        private void LateUpdate()
-        {
-            
-        }
-
         private void Update()
         {
-            if (_LastAnimation != CurrentAnimation)
-            {
-                _LastAnimation = CurrentAnimation;
-                SetAnimationOffset();
-            }
+            if (!_Renderer || !IsPlaying) 
+                return;
             
-            if (_Renderer && IsPlaying)
+            _Time += UnityEngine.Time.deltaTime;
+            if (CurrentAnimation is null || CurrentFrame is null || CurrentFrame == _LastFrame) 
+                return;
+                
+            var frame = CurrentAnimation.GetFrame(CurrentFrame.Value);
+            var frameSprite = frame.GetValue();
+            if (_Renderer.sprite != frameSprite)
+                _Renderer.sprite = frameSprite;
+            if (!frameSprite)
+                return;
+            
+            if (frame is { SubTexture: { } subTexture } && GetSparrowRenderer() is { } sparrowRenderer)
             {
-                _Time += UnityEngine.Time.deltaTime;
-                if (CurrentAnimation is not null && CurrentFrame is not null && CurrentFrame != _LastFrame)
-                {
-                    var frame = CurrentAnimation.GetFrame(CurrentFrame.Value);
-                    var frameSprite = frame.GetValue();
-                    if (!frameSprite)
-                        frameSprite = _Renderer.sprite;
-                    if (_Renderer.sprite != frameSprite)
-                        _Renderer.sprite = frameSprite;
-                    if (!frameSprite)
-                        return;
-                    if (frameSprite && frame is { SubTexture: { } subTexture })
-                    {
-                        if (!_SparrowRenderer)
-                        {
-                            _SparrowRenderer = GetComponent<SparrowRenderer>();
-                            if (!_SparrowRenderer)
-                                Debug.LogWarning("SparrowRenderer not found on the same GameObject as SpriteAnimator, but a frame is trying to use SubTextures.");
-                        }
-                        
-                        if (_SparrowRenderer)
-                        {
-                            _SparrowRenderer.x = (uint)subTexture.X;
-                            _SparrowRenderer.y = (uint)subTexture.Y;
-                            _SparrowRenderer.width = (uint)subTexture.Width;
-                            _SparrowRenderer.height = (uint)subTexture.Height;
-                            _SparrowRenderer.frameX = subTexture.FrameX;
-                            _SparrowRenderer.frameY = subTexture.FrameY;
-                            _SparrowRenderer.frameWidth = (uint)subTexture.FrameWidth;
-                            _SparrowRenderer.frameHeight = (uint)subTexture.FrameHeight;
-                        }
-                    }
+                sparrowRenderer.x = (uint)subTexture.X;
+                sparrowRenderer.y = (uint)subTexture.Y;
+                sparrowRenderer.width = (uint)subTexture.Width;
+                sparrowRenderer.height = (uint)subTexture.Height;
+                sparrowRenderer.frameX = subTexture.FrameX;
+                sparrowRenderer.frameY = subTexture.FrameY;
+                sparrowRenderer.frameWidth = (uint)subTexture.FrameWidth;
+                sparrowRenderer.frameHeight = (uint)subTexture.FrameHeight;
+            }
 
-                    _LastFrame = CurrentFrame.Value;
-                    OnFrameChanged?.Invoke(this, CurrentAnimation, frame, CurrentFrame.Value);
-                    if (CurrentFrame.Value == CurrentAnimation.Frames.Count - 1)
-                    {
-                        if (!_ShouldLoop)
-                            Pause();
-                        OnAnimationFinished?.Invoke(this, CurrentAnimation);
-                    }
-                }
+            _LastFrame = CurrentFrame.Value;
+            OnFrameChanged?.Invoke(this, CurrentAnimation, frame, CurrentFrame.Value);
+            if (CurrentFrame.Value == CurrentAnimation.Frames.Count - 1)
+            {
+                if (!_ShouldLoop)
+                    Pause();
+                OnAnimationFinished?.Invoke(this, CurrentAnimation);
             }
         }
 
@@ -262,6 +228,24 @@ namespace Animator.ForSprite
             OnAnimationStarted = null;
             OnFrameChanged = null;
             OnAnimationFinished = null;
+        }
+
+        // ReSharper disable Unity.PerformanceAnalysis
+        public SparrowRenderer? GetSparrowRenderer()
+        {
+            if (!UseSparrowAtlas)
+            {
+                _SparrowRenderer?.ResetValues();
+                _SparrowRenderer = null;
+                return null;
+            }
+            if (!_SparrowRenderer)
+            {
+                _SparrowRenderer = GetComponent<SparrowRenderer>();
+                if (!_SparrowRenderer)
+                    Debug.LogWarning("SparrowRenderer not found on the same GameObject as SpriteAnimator, but a frame is trying to use SubTextures.");
+            }
+            return _SparrowRenderer;
         }
     }
 }

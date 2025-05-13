@@ -153,7 +153,7 @@ namespace TransitionManagement
             property = property?.DeclaringType?.GetProperty(property.Name);
             property?.GetSetMethod(true).Invoke(transition, new object[]
             {
-                transitionObject
+                transitionObject.GetComponent<RectTransform>()
             });
         }
 

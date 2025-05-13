@@ -21,6 +21,10 @@ namespace TransitionManagement.Default
         public Image? TargetImage { get; private set; }
         public Slider? TargetSlider { get; private set; }
         public TMP_Text? TargetText { get; private set; }
+        
+        public const float DeactivatedOffsetY = 1080f;
+        public const float ActivatedOffsetY = -359.50f;
+        public const float DeactivationOffset = -1800f;
 
         public OpacityFadeTransition()
         {
@@ -39,14 +43,14 @@ namespace TransitionManagement.Default
             TargetImage = instance.GetComponentInChildren<Image>(obj => obj.name == "BlackImage");
             TargetSlider = instance.GetComponentInChildren<Slider>(obj => obj.name == "Progress", true);
             TargetText = instance.GetComponentInChildren<TMP_Text>(obj => obj.name == "Text" && obj.transform.parent.gameObject.name == "Progress", true);
-            var rectTransform = instance.GetComponent<RectTransform>();
-            if (rectTransform)
-            {
-                rectTransform.anchorMin = Vector2.zero;
-                rectTransform.anchorMax = Vector2.one;
-                rectTransform.offsetMin = Vector2.zero;
-                rectTransform.offsetMax = Vector2.zero;
-            }
+            // var rectTransform = instance.GetComponent<RectTransform>();
+            // if (rectTransform)
+            // {
+            //     rectTransform.anchorMin = Vector2.zero;
+            //     rectTransform.anchorMax = Vector2.one;
+            //     rectTransform.offsetMin = Vector2.zero;
+            //     rectTransform.offsetMax = Vector2.zero;
+            // }
             return instance;
         }
 
@@ -54,10 +58,11 @@ namespace TransitionManagement.Default
         {
             if (!IsConstructed || !TargetImage || !TargetSlider || !TargetCanvasGroup) 
                 return false;
-            TargetCanvasGroup.alpha = 0;
+            //TargetCanvasGroup.alpha = 0;
             TargetSlider.value = 0;
             base.Activate();
-            DOTween.To(() => TargetCanvasGroup.alpha, x => TargetCanvasGroup.alpha = x, 1, ActivationDuration);
+            var lastY = ConstructedTarget!.position.y;
+            DOTween.To(() => ConstructedTarget!.position.y, y => ConstructedTarget!.position = new Vector3(ConstructedTarget!.position.x, y, ConstructedTarget!.position.z), ActivatedOffsetY, ActivationDuration);
             return true;
         }
         
@@ -65,15 +70,15 @@ namespace TransitionManagement.Default
         {
             if (!IsConstructed || !TargetImage || !TargetSlider || !TargetCanvasGroup) 
                 return false;
-            TargetSlider.value = 0;
+            //TargetSlider.value = 0;
             if (!IsActive)
             {
-                TargetCanvasGroup.alpha = 1;
+                //TargetCanvasGroup.alpha = 1;
                 base.Activate();
             }
-            DOTween
-                .To(() => TargetCanvasGroup.alpha, x => TargetCanvasGroup.alpha = x, 0, ActivationDuration)
-                .OnComplete(() => base.Deactivate());
+            //DOTween
+                //.To(() => TargetCanvasGroup.alpha, x => TargetCanvasGroup.alpha = x, 0, ActivationDuration / 2f)
+                //.OnComplete(() => base.Deactivate());
             return true;
         }
 
