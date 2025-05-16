@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TransitionManager.Attributes
+namespace TransitionManagement.Attributes
 {
     public class TransitionTypeDeclaration : Attribute
     {

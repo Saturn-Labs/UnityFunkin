@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using Animator.ForSprite;
+using Animator.SpriteAnimating;
 using SpriteUtils;
 using UnityEngine;
 

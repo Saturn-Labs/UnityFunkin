@@ -473,8 +473,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   x: 0
   y: 0
-  width: 717
-  height: 648
+  _Width: 0
+  _Height: 0
   frameX: -2
   frameY: -14
   _FrameWidth: 721
@@ -568,6 +568,7 @@ MonoBehaviour:
   StartOnFirstAnimation: 0
   UseOffsets: 0
   UseAnimationFrameRate: 1
+  UseSparrowAtlas: 1
 --- !u!1 &697123885
 GameObject:
   m_ObjectHideFlags: 0
@@ -621,10 +622,16 @@ MonoBehaviour:
   girlfriendAnimator: {fileID: 607154326}
   girlfriendSprite: {fileID: 21300000, guid: 126c8dde8c5dba643abfe8c316c9c627, type: 3}
   girlfriendSparrow: {fileID: 4900000, guid: f5dcf6f223e68144ea874cb5ba9c8052, type: 3}
+  girlfriendDanceLeft: 1
   pressEnterAnimator: {fileID: 1778970139}
   pressEnterSprite: {fileID: 21300000, guid: cd2523d1421c8ff49ab90a8994387ed2, type: 3}
   pressEnterSparrow: {fileID: 4900000, guid: b878c9785f2d296449a743d3f7ebfcff, type: 3}
+  inIntroText: 1
   enterWasPressed: 0
+  curBeat: 0
+  nextBeatTime: 0
+  time: 0
+  freakyMenu: {fileID: 8300000, guid: 67a4ca679bb0a094ea7da0c46a6c040e, type: 3}
 --- !u!1 &1184298772
 GameObject:
   m_ObjectHideFlags: 0
@@ -693,6 +700,7 @@ MonoBehaviour:
   StartOnFirstAnimation: 0
   UseOffsets: 0
   UseAnimationFrameRate: 1
+  UseSparrowAtlas: 1
 --- !u!114 &1184298775
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -707,8 +715,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   x: 0
   y: 0
-  width: 894
-  height: 670
+  _Width: 0
+  _Height: 0
   frameX: -22
   frameY: -16
   _FrameWidth: 939
@@ -816,8 +824,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   x: 0
   y: 89
-  width: 1495
-  height: 96
+  _Width: 0
+  _Height: 0
   frameX: 0
   frameY: 0
   _FrameWidth: 0
@@ -871,7 +879,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 1
-  m_Size: {x: 14.95, y: 0.96}
+  m_Size: {x: 0, y: 0}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -911,6 +919,7 @@ MonoBehaviour:
   StartOnFirstAnimation: 0
   UseOffsets: 0
   UseAnimationFrameRate: 1
+  UseSparrowAtlas: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

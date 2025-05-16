@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml.Serialization;
-using Animator.ForSprite;
+using Animator.SpriteAnimating;
 using UnityEngine;
 
 namespace SpriteUtils
@@ -25,7 +26,7 @@ namespace SpriteUtils
                 FrameRate = descriptor.FrameRate,
                 Reverse = descriptor.Reverse
             };
-                
+            
             foreach (var subTexture in SubTextures)
             {
                 if (descriptor.FrameSelector(descriptor, animation, subTexture))
@@ -39,6 +40,35 @@ namespace SpriteUtils
                 }
             }
                 
+            return animation;
+        }
+
+        public SpriteAnimation CreateAnimationByIndices(Sprite sprite, string prefix, IEnumerable<int> indices, AnimationDescriptor descriptor)
+        {
+            var animation = new SpriteAnimation()
+            {
+                Name = descriptor.Name,
+                Offset = descriptor.Offset,
+                FrameRate = descriptor.FrameRate,
+                Reverse = descriptor.Reverse
+            };
+            
+            var subTextures = SubTextures
+                .Where(s => s.Name.StartsWith(prefix))
+                .ToArray();
+            foreach (var index in indices)
+            {
+                var subTexture = subTextures.ElementAtOrDefault(index);
+                if (subTexture != null)
+                {
+                    animation.AddFrame(new SpriteAnimationFrame
+                    {
+                        Name = subTexture.Name,
+                        Sprite = sprite,
+                        SubTexture = subTexture
+                    });
+                }
+            }
             return animation;
         }
 

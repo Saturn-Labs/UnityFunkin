@@ -1,4 +1,4 @@
-﻿using Animator.ForSprite;
+﻿using Animator.SpriteAnimating;
 using UnityEngine;
 
 namespace SpriteUtils

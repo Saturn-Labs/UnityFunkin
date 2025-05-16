@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Reflection;
-using TransitionManager.Attributes;
+using TransitionManagement.Attributes;
 using UnityEngine;
 
 namespace TransitionManagement
